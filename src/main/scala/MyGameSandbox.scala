@@ -39,17 +39,16 @@ object MyGameSandbox extends IndigoSandbox[Unit, Model] {
     Model.initial(config, shotSpeed)
 
   def updateModel(context: FrameContext[Unit], model: Model): GlobalEvent => Outcome[Model] = {
-    case KeyboardEvent.KeyDown(Keys.LEFT_ARROW) =>
-      Outcome(model.update(-speed, false, config))
 
-    case KeyboardEvent.KeyDown(Keys.RIGHT_ARROW) =>
-      Outcome(model.update(speed, false, config))
+    case MouseEvent.Move(x, y) => 
+      Outcome(model.update(Point(x, y), false, config))
 
     case KeyboardEvent.KeyDown(Keys.SPACE) =>
       Outcome(model.update(0, true, config)).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
 
+
     case FrameTick =>
-      Outcome(model.update(0, false, config))
+      Outcome(model.update(model.skrillex.location, false, config))
 
     case _ =>
       Outcome(model)
@@ -85,8 +84,8 @@ object MyGameSandbox extends IndigoSandbox[Unit, Model] {
 }
 
 case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Int, lights: List[LightWithLocation]) {
-  def update(skrillexChange: Int, newShot: Boolean, config: GameConfig): Model = {
-    val newSkrillex = Skrillex(Point(this.skrillex.location.x + skrillexChange, this.skrillex.location.y))
+  def update(skrillexChange: Point, newShot: Boolean, config: GameConfig): Model = {
+    val newSkrillex = Skrillex(Point(skrillexChange.x, this.skrillex.location.y))
     val oldShots = shots.map(oldShot => Shot(Point(oldShot.location.x, oldShot.location.y - shotSpeed)))
     val newShots = if (newShot) oldShots ++ List(Shot(skrillex.location)) else oldShots
     val newLights = lights.map(_.moveBy(10, 10, config))
