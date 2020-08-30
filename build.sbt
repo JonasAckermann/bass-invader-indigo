@@ -14,10 +14,10 @@ lazy val bassinvader =
     )
     .settings( // Indigo specific settings
       showCursor := true,
-      title := "My Game - Made with Indigo",
+      title := "Bass Invader - Made with Indigo",
       gameAssetsDirectory := "assets",
-      windowStartWidth := 550,
-      windowStartHeight := 400,
+      windowStartWidth := 1200,
+      windowStartHeight := 800,
       libraryDependencies ++= Seq(
         "io.indigoengine" %%% "indigo-json-circe" % "0.3.0",
         "io.indigoengine" %%% "indigo"            % "0.3.0",

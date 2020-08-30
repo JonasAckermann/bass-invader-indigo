@@ -2,7 +2,7 @@
 
 Is that even music coming from your room? Don't let grandma cut you off.
 
-A port of the first game I ever made to Scala using the [Indigo Game Engine](https://github.com/PurpleKingdomGames/indigo).
+A port of the first game I ever made to ScalaJS using the [Indigo Game Engine](https://github.com/PurpleKingdomGames/indigo).
 
 ## Controls
 
@@ -17,6 +17,8 @@ sbt runGame
 ```
 
 This will run it locally using Electron.
+
+TODO figure out when/where npm install required
 
 ## A note on music
 
