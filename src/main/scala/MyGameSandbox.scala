@@ -20,11 +20,13 @@ object MyGameSandbox extends IndigoSandbox[Unit, Model] {
   val skrillexAsset = AssetName("skrillex")
   val shotAsset = AssetName("shot")
   val bgAsset = AssetName("bg")
+  val shotSoundAsset = AssetName("shotSound")
   val assets: Set[AssetType] =
     Set(
        AssetType.Image(skrillexAsset, AssetPath("assets/skrillex.png")),
        AssetType.Image(shotAsset, AssetPath("assets/Wave2.png")),
-       AssetType.Image(bgAsset, AssetPath("assets/bg.png")),      
+       AssetType.Image(bgAsset, AssetPath("assets/bg.png")),   
+       AssetType.Audio(shotSoundAsset, AssetPath("assets/grannyHit_sample_V2.wav"))   
     )
 
   val fonts: Set[FontInfo] =
@@ -44,7 +46,7 @@ object MyGameSandbox extends IndigoSandbox[Unit, Model] {
       Outcome(model.update(speed, false, config))
 
     case KeyboardEvent.KeyDown(Keys.SPACE) =>
-      Outcome(model.update(0, true, config))
+      Outcome(model.update(0, true, config)).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
 
     case FrameTick =>
       Outcome(model.update(0, false, config))
