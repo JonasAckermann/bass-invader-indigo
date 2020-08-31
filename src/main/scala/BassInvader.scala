@@ -30,7 +30,7 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
        AssetType.Image(shotAsset, AssetPath("assets/Wave2.png")),
        AssetType.Image(grandmaAsset, AssetPath("assets/Granny.png")),
        AssetType.Image(bgAsset, AssetPath("assets/bg.png")),   
-       AssetType.Audio(shotSoundAsset, AssetPath("assets/grannyHit_sample_V2.wav"))   
+       AssetType.Audio(shotSoundAsset, AssetPath("assets/drop.m4a"))   
     )
 
   val fonts: Set[FontInfo] =
