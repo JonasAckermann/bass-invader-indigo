@@ -6,7 +6,7 @@ A port of the first game I ever made to ScalaJS using the [Indigo Game Engine](h
 
 ## Controls
 
-The game is a very simple Space Invaders clone. Use the arrow keys to move and Space to shoot.
+The game is a very simple Space Invaders clone. Use the mouse to move and Space to shoot.
 
 ## Running the game
 
