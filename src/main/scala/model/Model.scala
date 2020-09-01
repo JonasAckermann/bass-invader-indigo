@@ -10,7 +10,7 @@ case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Int, lights: 
     else x
 
   private def checkHits(shotsToCheck: List[Shot]): (List[Shot], Boolean) = {
-    val filteredShots = shotsToCheck.filterNot(_.hitBox.isHit(grandma.hitBox))
+    val filteredShots = shotsToCheck.filterNot(_.hitBox.overlaps(grandma.hitBox))
     (filteredShots, filteredShots.length < shotsToCheck.length)
   }
 
