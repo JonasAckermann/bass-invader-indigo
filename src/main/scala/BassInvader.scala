@@ -8,9 +8,9 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   val magnification = 1
   val width = 1200
   val height = 800
-  val speed = 40
-  val shotSpeed = 3
-  val grandmaSpeed = 2
+  val speed = 40.0
+  val shotSpeed = 3.0
+  val grandmaSpeed = 2.0
   val config: GameConfig =
     GameConfig.default
     .withMagnification(magnification)
@@ -45,13 +45,13 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   def updateModel(context: FrameContext[Unit], model: Model): GlobalEvent => Outcome[Model] = {
 
     case MouseEvent.Move(x, y) => 
-      Outcome(model.update(Point(x, y), false, config, context.delta))
+      Outcome(model.updateSkrillex(Location(x.toDouble, y.toDouble), config))
 
     case KeyboardEvent.KeyDown(Keys.SPACE) =>
-      Outcome(model.update(model.skrillex.location, true, config, context.delta)).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
+      Outcome(model.updateShot()).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
 
     case FrameTick =>
-      Outcome(model.update(model.skrillex.location, false, config, context.delta))
+      Outcome(model.updateTick(config, context.delta))
 
     case _ =>
       Outcome(model)
@@ -66,7 +66,7 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
 
   def drawLights(lights: List[LightWithLocation]): List[PointLight] =
    lights.map(l => PointLight.default
-  .moveTo(Point(l.location.x, l.location.y))
+  .moveTo(l.location.toPoint)
   .withAttenuation(500) // How far the light fades out to
   .withColor(l.color)
   .withHeight(100)
@@ -81,14 +81,14 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
     ) ++ shots.map(shot => 
       shotGraphic
         .withRef(10,0)
-        .moveTo(shot.location)
+        .moveTo(shot.location.toPoint)
     )  ++ List(
       Graphic(Rectangle(0, 0, 40, 50), 1, Material.Textured(grandmaAsset).lit)
       .withRef(Point(20, 0))
-      .moveTo(grandma.location)
+      .moveTo(grandma.location.toPoint)
     ) ++ List(
       Graphic(Rectangle(0, 0, 120, 50), 1, Material.Textured(skrillexAsset).lit)
         .withRef(60,0)
-        .moveTo(skrillex.location)
+        .moveTo(skrillex.location.toPoint)
     ) 
 }
