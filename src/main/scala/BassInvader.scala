@@ -60,7 +60,7 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   def present(context: FrameContext[Unit], model: Model): SceneUpdateFragment =
     SceneUpdateFragment.empty
     .addGameLayerNodes(
-      drawScene(model.skrillex, model.shots, model.grandma)
+      drawScene(model.skrillex, model.shots, model.grandmas)
     )
     .withLights(drawLights(model.lights))
 
@@ -75,14 +75,14 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   val shotGraphic = Graphic(Rectangle(0, 0, 20, 30), 1, Material.Textured(shotAsset).lit)
   val bgGraphic = Graphic(Rectangle(0, 0, config.viewport.width, config.viewport.height), 1, Material.Textured(bgAsset).lit)
   
-  def drawScene(skrillex: Skrillex, shots: List[Shot], grandma: Grandma): List[Graphic] = 
+  def drawScene(skrillex: Skrillex, shots: List[Shot], grandmas: List[Grandma]): List[Graphic] = 
     List(
       bgGraphic
     ) ++ shots.map(shot => 
       shotGraphic
         .withRef(10,0)
         .moveTo(shot.location.toPoint)
-    )  ++ List(
+    )  ++ grandmas.map( grandma => 
       Graphic(Rectangle(0, 0, 40, 50), 1, Material.Textured(grandmaAsset).lit)
       .withRef(Point(20, 0))
       .moveTo(grandma.location.toPoint)

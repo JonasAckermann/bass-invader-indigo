@@ -36,4 +36,9 @@ case class Direction(vertical: Vertical, horizontal: Horizontal){
     val newHorizontal = if(location.x > config.viewport.width || location.x < 0) horizontal.opposite else horizontal
     Direction(newVertical, newHorizontal)
   }
+  def fromLocationWithNegativeY(location: Location, config: GameConfig): Direction = {
+    val newVertical = if(location.y > config.viewport.height) vertical.opposite else vertical
+    val newHorizontal = if(location.x > config.viewport.width || location.x < 0) horizontal.opposite else horizontal
+    Direction(newVertical, newHorizontal)
+  }
 }
