@@ -15,7 +15,13 @@ trait HitBox {
         val otherTop = otherBox.location.y - (otherBox.height/2)
         val bottom = this.location.y + (height/2)
         val otherBottom = otherBox.location.y + (otherBox.height/2)
-        (right > otherLeft && top < otherBottom) || (right > otherLeft && bottom > otherTop) || (left < otherRight && top < otherBottom) || (left < otherRight && bottom > otherTop)
+        (right > otherLeft && left < otherLeft && top < otherTop && bottom > otherTop) || 
+        (right > otherLeft && left < otherLeft && top < otherBottom && bottom > otherBottom) ||
+        (left < otherRight && right > otherRight && top < otherTop && bottom > otherTop) ||
+        (left < otherRight && right > otherRight && top < otherBottom && bottom > otherBottom) || 
+        (left > otherLeft && right < otherRight && top < otherTop && bottom > otherTop) ||
+        (left > otherLeft && right < otherRight && top < otherBottom && bottom > otherBottom) || 
+        (left > otherLeft && right < otherRight && top > otherTop && bottom < otherBottom) 
     }
 }
 

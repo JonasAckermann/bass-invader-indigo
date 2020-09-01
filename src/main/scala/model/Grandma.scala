@@ -11,7 +11,7 @@ case class Grandma(location: Point, direction: Direction, hitBox: GrandmaHitBox)
     val newHitbox = GrandmaHitBox(hitBox.width, hitBox.height, newLocation)
     Grandma(newLocation, newDirection, newHitbox)
   }
-  val reset: Grandma = Grandma(Point(location.x, 0), direction, hitBox.copy(location = Point(location.x, 0)))
+  def reset: Grandma = Grandma(Point(location.x, 0), direction, hitBox.copy(location = Point(location.x, 0)))
 }
 object Grandma{
     def initial(config: GameConfig): Grandma = {
