@@ -2,12 +2,12 @@ package model
 
 import indigo._
 
-case class Shot(location: Point, hitBox: Rectangle){
-    def moveBy(shotSpeed: Int): Shot = {
-        val newLocation = Point(this.location.x, this.location.y - shotSpeed)
-        Shot(newLocation, hitBox.moveTo(newLocation))
+case class Shot(location: Location, hitBox: Rectangle){
+    def moveBy(shotSpeed: Double): Shot = {
+        val newLocation = Location(this.location.x, this.location.y - shotSpeed)
+        Shot(newLocation, hitBox.moveTo(newLocation.toPoint))
     }
 }
 object Shot{
-    def newShot(location: Point): Shot = Shot(location, Rectangle(location, Point(20,30)))
+    def newShot(location: Location): Shot = Shot(location, Rectangle(location.toPoint, Point(20,30)))
 }

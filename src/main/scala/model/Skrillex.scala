@@ -1,8 +1,6 @@
 package model
 
-import indigo._
-
-case class Skrillex(location: Point)
+case class Skrillex(location: Location)
 object Skrillex {
-  def initial(center: Point, height: Int) = Skrillex(Point(center.x, height))
+  def initial(center: Location, height: Int) = Skrillex(Location(center.x, height.toDouble))
 }
