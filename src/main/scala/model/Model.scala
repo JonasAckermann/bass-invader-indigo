@@ -9,12 +9,19 @@ case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Int, lights: 
     else if(x < minX) minX
     else x
 
+  private def checkHits(shotsToCheck: List[Shot]): (List[Shot], Boolean) = {
+    val filteredShots = shotsToCheck.filterNot(_.hitBox.isHit(grandma.hitBox))
+    (filteredShots, filteredShots.length < shotsToCheck.length)
+  }
+
   def update(skrillexChange: Point, newShot: Boolean, config: GameConfig): Model = {
     val newSkrillex = Skrillex(Point(boundedX(skrillexChange.x, 0, config.viewport.width), skrillex.location.y))
-    val oldShots = shots.map(oldShot => Shot(Point(oldShot.location.x, oldShot.location.y - shotSpeed)))
-    val newShots = if (newShot) oldShots ++ List(Shot(skrillex.location)) else oldShots
     val newLights = lights.map(_.moveBy(10, 10, config))
-    val newGrandma = grandma.moveBy(grandmaSpeed, grandmaSpeed, config)
+    
+    val (filteredShots, grandmaIsHit) = checkHits(shots)
+    val oldShots = filteredShots.map(_.moveBy(shotSpeed))
+    val newShots = if (newShot) oldShots ++ List(Shot.newShot(skrillex.location)) else oldShots
+    val newGrandma = if(grandmaIsHit) grandma.reset else grandma.moveBy(grandmaSpeed, grandmaSpeed, config)
     this.copy(newSkrillex, newShots, shotSpeed, newLights, newGrandma, grandmaSpeed)
   }
 }
