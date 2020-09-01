@@ -14,14 +14,16 @@ case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Int, lights: 
     (filteredShots, filteredShots.length < shotsToCheck.length)
   }
 
-  def update(skrillexChange: Point, newShot: Boolean, config: GameConfig): Model = {
+  def distanceFromDelta(pxPerSec: Int, delta: Seconds): Int = Math.round(60.0F*pxPerSec*delta.value.floatValue)
+
+  def update(skrillexChange: Point, newShot: Boolean, config: GameConfig, delta: Seconds): Model = {
     val newSkrillex = Skrillex(Point(boundedX(skrillexChange.x, 0, config.viewport.width), skrillex.location.y))
-    val newLights = lights.map(_.moveBy(10, 10, config))
+    val newLights = lights.map(_.moveBy(distanceFromDelta(10, delta), distanceFromDelta(10, delta), config))
     
     val (filteredShots, grandmaIsHit) = checkHits(shots)
-    val oldShots = filteredShots.map(_.moveBy(shotSpeed))
+    val oldShots = filteredShots.map(_.moveBy(distanceFromDelta(shotSpeed, delta)))
     val newShots = if (newShot) oldShots ++ List(Shot.newShot(skrillex.location)) else oldShots
-    val newGrandma = if(grandmaIsHit) grandma.reset else grandma.moveBy(grandmaSpeed, grandmaSpeed, config)
+    val newGrandma = if(grandmaIsHit) grandma.reset else grandma.moveBy(distanceFromDelta(grandmaSpeed, delta), distanceFromDelta(grandmaSpeed, delta), config)
     this.copy(newSkrillex, newShots, shotSpeed, newLights, newGrandma, grandmaSpeed)
   }
 }

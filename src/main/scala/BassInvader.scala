@@ -45,13 +45,13 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   def updateModel(context: FrameContext[Unit], model: Model): GlobalEvent => Outcome[Model] = {
 
     case MouseEvent.Move(x, y) => 
-      Outcome(model.update(Point(x, y), false, config))
+      Outcome(model.update(Point(x, y), false, config, context.delta))
 
     case KeyboardEvent.KeyDown(Keys.SPACE) =>
-      Outcome(model.update(model.skrillex.location, true, config)).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
+      Outcome(model.update(model.skrillex.location, true, config, context.delta)).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
 
     case FrameTick =>
-      Outcome(model.update(model.skrillex.location, false, config))
+      Outcome(model.update(model.skrillex.location, false, config, context.delta))
 
     case _ =>
       Outcome(model)
