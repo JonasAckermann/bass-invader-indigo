@@ -19,8 +19,9 @@ case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Double, light
 
   private def moveAndCheckStrikes(grandmasToMove: List[Grandma], delta: Seconds, config: GameConfig): (List[Grandma], Int) = {
     val movedGrandmas: List[Grandma] = grandmasToMove.map(_.moveBy(distanceFromDelta(grandmaSpeed, delta), distanceFromDelta(grandmaSpeed, delta), config))
-    // All reset grandmas are counted
-    val strikes: Int = movedGrandmas.count(_.location.y <= 0 )
+    // Fragile: Count all grandmas that have been reset to the reset position by the moveBy method.
+    // All grandmas reset to that position by hits will have been moved out of the reset position by this point.
+    val strikes: Int = movedGrandmas.count(_.location.y == Grandma.aboveScreen )
     (movedGrandmas, strikes)
   }
 

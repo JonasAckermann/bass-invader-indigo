@@ -24,17 +24,19 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   val grandmaAsset = AssetName("grandma")
   val bgAsset = AssetName("bg")
   val shotSoundAsset = AssetName("shotSound")
+  val fontAssetName = AssetName("font")
   val assets: Set[AssetType] =
     Set(
        AssetType.Image(skrillexAsset, AssetPath("assets/skrillex.png")),
        AssetType.Image(shotAsset, AssetPath("assets/Wave2.png")),
        AssetType.Image(grandmaAsset, AssetPath("assets/Granny.png")),
        AssetType.Image(bgAsset, AssetPath("assets/bg.png")),   
-       AssetType.Audio(shotSoundAsset, AssetPath("assets/drop.m4a"))   
+       AssetType.Audio(shotSoundAsset, AssetPath("assets/drop.m4a")),
+       AssetType.Image(fontAssetName, AssetPath("assets/boxy_font.png"))   
     )
 
   val fonts: Set[FontInfo] =
-    Set()
+    Set(Font.fontInfo(fontAssetName))
 
   def setup(assetCollection: AssetCollection, dice: Dice): Startup[StartupErrors, Unit] =
     Startup.Success(())
@@ -63,6 +65,9 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
       drawScene(model.skrillex, model.shots, model.grandmas)
     )
     .withLights(drawLights(model.lights))
+    .addGameLayerNodes(drawText(model.points, model.strikes))
+
+  def drawText(score: Int, strikes: Int) = List(Text(s"Score $score", 10, 20, 1, Font.fontKey).alignLeft) ++ List(Text(s"Strikes $strikes", config.viewport.width - 10, 20, 1, Font.fontKey).alignRight)
 
   def drawLights(lights: List[LightWithLocation]): List[PointLight] =
    lights.map(l => PointLight.default
