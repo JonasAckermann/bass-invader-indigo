@@ -4,7 +4,16 @@ import indigo._
 
 case class CheckHitsResult(shots: List[Shot], remainingGrandmas: List[Grandma], resetGrandmas: List[Grandma], points: Int)
 
-case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Double, lights: List[LightWithLocation], grandmas: List[Grandma], grandmaSpeed: Double, points: Int, strikes: Int) {
+case class Model(
+  skrillex: Skrillex, 
+  shots: List[Shot], 
+  shotSpeed: Double, 
+  lights: List[LightWithLocation], 
+  grandmas: List[Grandma], 
+  grandmaSpeed: Double, 
+  points: Int, 
+  strikes: Int,
+  splats: List[Splatter]) {
 
   private def boundedX(x: Double, minX: Double, maxX: Double): Double = 
     if(x > maxX) maxX
@@ -46,7 +55,8 @@ case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Double, light
     val newShots = hitsChecked.shots.map(_.moveBy(distanceFromDelta(shotSpeed, delta)))
     val (grandmasMoved, newStrikes) = moveAndCheckStrikes(hitsChecked.remainingGrandmas, delta, config)
     val newGrandmas = hitsChecked.resetGrandmas.map(_.reset) ++  grandmasMoved
-    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, strikes + newStrikes)
+    val newSplats = hitsChecked.resetGrandmas.map(_.location).map(Splatter.fromLocation)
+    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, strikes + newStrikes, (newSplats ++ splats).take(200))
   }
 }
 object Model {
@@ -59,6 +69,7 @@ object Model {
       0.to(9).map(_ => Grandma.initial(config)).toList,
       grandmaSpeed,
       0, 
-      0
+      0,
+      List.empty
     )
 }

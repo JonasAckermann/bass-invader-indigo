@@ -10,7 +10,7 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   val height = 800
   val speed = 40.0
   val shotSpeed = 3.0
-  val grandmaSpeed = 2.0
+  val grandmaSpeed = 3.0
   val config: GameConfig =
     GameConfig.default
     .withMagnification(magnification)
@@ -22,6 +22,7 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   val skrillexAsset = AssetName("skrillex")
   val shotAsset = AssetName("shot")
   val grandmaAsset = AssetName("grandma")
+  val splatAsset = AssetName("splat")
   val bgAsset = AssetName("bg")
   val shotSoundAsset = AssetName("shotSound")
   val fontAssetName = AssetName("font")
@@ -30,9 +31,10 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
        AssetType.Image(skrillexAsset, AssetPath("assets/skrillex.png")),
        AssetType.Image(shotAsset, AssetPath("assets/Wave2.png")),
        AssetType.Image(grandmaAsset, AssetPath("assets/Granny.png")),
+       AssetType.Image(splatAsset, AssetPath("assets/splat.png")),
        AssetType.Image(bgAsset, AssetPath("assets/bg.png")),   
        AssetType.Audio(shotSoundAsset, AssetPath("assets/drop.m4a")),
-       AssetType.Image(fontAssetName, AssetPath("assets/boxy_font.png"))   
+       AssetType.Image(fontAssetName, AssetPath("assets/boxy_font.png"))
     )
 
   val fonts: Set[FontInfo] =
@@ -62,7 +64,7 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   def present(context: FrameContext[Unit], model: Model): SceneUpdateFragment =
     SceneUpdateFragment.empty
     .addGameLayerNodes(
-      drawScene(model.skrillex, model.shots, model.grandmas)
+      drawScene(model.skrillex, model.shots, model.grandmas, model.splats)
     )
     .withLights(drawLights(model.lights))
     .addGameLayerNodes(drawText(model.points, model.strikes))
@@ -80,9 +82,15 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
   val shotGraphic = Graphic(Rectangle(0, 0, 20, 30), 1, Material.Textured(shotAsset).lit)
   val bgGraphic = Graphic(Rectangle(0, 0, config.viewport.width, config.viewport.height), 1, Material.Textured(bgAsset).lit)
   
-  def drawScene(skrillex: Skrillex, shots: List[Shot], grandmas: List[Grandma]): List[Graphic] = 
+  def drawScene(skrillex: Skrillex, shots: List[Shot], grandmas: List[Grandma], splats: List[Splatter]): List[Graphic] = 
     List(
       bgGraphic
+    ) ++ splats.map(splat =>
+      Graphic(Rectangle(0, 0, 40, 40), 1, Material.Textured(splatAsset).lit)
+        .withRef(20,0)
+        .rotate(splat.rotation)
+        .scaleBy(splat.scale, splat.scale)
+        .moveTo(splat.location.toPoint)
     ) ++ shots.map(shot => 
       shotGraphic
         .withRef(10,0)
@@ -95,5 +103,5 @@ object BassInvader extends IndigoSandbox[Unit, Model] {
       Graphic(Rectangle(0, 0, 120, 50), 1, Material.Textured(skrillexAsset).lit)
         .withRef(60,0)
         .moveTo(skrillex.location.toPoint)
-    ) 
+    )
 }
