@@ -32,13 +32,13 @@ object Horizontal{
 }
 case class Direction(vertical: Vertical, horizontal: Horizontal){
   def fromLocation(location: Location, config: GameConfig): Direction = {
-    val newVertical = if(location.y > config.viewport.height || location.y < 0) vertical.opposite else vertical
-    val newHorizontal = if(location.x > config.viewport.width || location.x < 0) horizontal.opposite else horizontal
+    val newVertical = if(location.y > config.viewport.bounds.bottom || location.y < config.viewport.bounds.top) vertical.opposite else vertical
+    val newHorizontal = if(location.x > config.viewport.bounds.right || location.x < config.viewport.bounds.left) horizontal.opposite else horizontal
     Direction(newVertical, newHorizontal)
   }
   def fromLocationWithNegativeY(location: Location, config: GameConfig): Direction = {
-    val newVertical = if(location.y > config.viewport.height) vertical.opposite else vertical
-    val newHorizontal = if(location.x > config.viewport.width || location.x < 0) horizontal.opposite else horizontal
+    val newVertical = if(location.y > config.viewport.bounds.bottom) vertical.opposite else vertical
+    val newHorizontal = if(location.x > config.viewport.bounds.right || location.x < config.viewport.bounds.left) horizontal.opposite else horizontal
     Direction(newVertical, newHorizontal)
   }
 }

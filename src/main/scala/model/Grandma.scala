@@ -6,7 +6,7 @@ case class Grandma(location: Location, direction: Direction, hitBox: Rectangle){
   def moveBy(x: Double, y: Double, config: GameConfig): Grandma = {
     val newDirection = direction.fromLocationWithNegativeY(location, config)
     // need to use new direction, otherwise stuck in cancelling directions
-    val newY = if (location.y + newDirection.vertical.inDirection(y) > config.viewport.height) 0 else location.y + newDirection.vertical.inDirection(y)
+    val newY = if (location.y + newDirection.vertical.inDirection(y) > config.viewport.height) Grandma.aboveScreen else location.y + newDirection.vertical.inDirection(y)
     val newLocation = Location(location.x + newDirection.horizontal.inDirection(x), newY)
     Grandma(newLocation, newDirection, hitBox.moveTo(newLocation.toPoint))
   }

@@ -4,7 +4,7 @@ import indigo._
 
 case class CheckHitsResult(shots: List[Shot], remainingGrandmas: List[Grandma], resetGrandmas: List[Grandma], points: Int)
 
-case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Double, lights: List[LightWithLocation], grandmas: List[Grandma], grandmaSpeed: Double) {
+case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Double, lights: List[LightWithLocation], grandmas: List[Grandma], grandmaSpeed: Double, points: Int, strikes: Int) {
 
   private def boundedX(x: Double, minX: Double, maxX: Double): Double = 
     if(x > maxX) maxX
@@ -15,6 +15,13 @@ case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Double, light
     val filteredShots = shotsToCheck.filterNot(shot => grandmasToCheck.exists(grandma => shot.hitBox.overlaps(grandma.hitBox)))
     val (resetGrandmas, remainingGrandmas) = grandmasToCheck.partition(grandma => shotsToCheck.exists(shot => grandma.hitBox.overlaps(shot.hitBox)))
     CheckHitsResult(filteredShots, remainingGrandmas, resetGrandmas, resetGrandmas.length)
+  }
+
+  private def moveAndCheckStrikes(grandmasToMove: List[Grandma], delta: Seconds, config: GameConfig): (List[Grandma], Int) = {
+    val movedGrandmas: List[Grandma] = grandmasToMove.map(_.moveBy(distanceFromDelta(grandmaSpeed, delta), distanceFromDelta(grandmaSpeed, delta), config))
+    // All reset grandmas are counted
+    val strikes: Int = movedGrandmas.count(_.location.y <= 0 )
+    (movedGrandmas, strikes)
   }
 
   def distanceFromDelta(pxPerSec: Double, delta: Seconds): Double = 60.0*pxPerSec*delta.value
@@ -36,8 +43,9 @@ case class Model(skrillex: Skrillex, shots: List[Shot], shotSpeed: Double, light
     val newLights = lights.map(_.moveBy(distanceFromDelta(10, delta), distanceFromDelta(10, delta), config))
     val hitsChecked = checkHits(shots, grandmas)
     val newShots = hitsChecked.shots.map(_.moveBy(distanceFromDelta(shotSpeed, delta)))
-    val newGrandma = hitsChecked.resetGrandmas.map(_.reset) ++  hitsChecked.remainingGrandmas.map(_.moveBy(distanceFromDelta(grandmaSpeed, delta), distanceFromDelta(grandmaSpeed, delta), config))
-    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandma, grandmaSpeed)
+    val (grandmasMoved, newStrikes) = moveAndCheckStrikes(hitsChecked.remainingGrandmas, delta, config)
+    val newGrandmas = hitsChecked.resetGrandmas.map(_.reset) ++  grandmasMoved
+    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, strikes + newStrikes)
   }
 }
 object Model {
@@ -48,6 +56,8 @@ object Model {
       shotSpeed,
       List(LightWithLocation(RGB.Magenta, Location(0, 0)), LightWithLocation(RGB.Cyan, Location(300, 700)), LightWithLocation(RGB.Yellow, Location(800, 100))),
       0.to(9).map(_ => Grandma.initial(config)).toList,
-      grandmaSpeed
+      grandmaSpeed,
+      0, 
+      0
     )
 }
