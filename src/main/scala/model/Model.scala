@@ -44,7 +44,7 @@ case class Model(
 
   // Only update new shots with location
   def updateShot(): Model = {
-    val newShots = this.shots ++ List(Shot.newShot(skrillex.location))
+    val newShots = (List(Shot.newShot(skrillex.location)) ++ this.shots).take(300)
     this.copy(shots = newShots)
   }
 
