@@ -56,7 +56,7 @@ case class Model(
     val (grandmasMoved, newStrikes) = moveAndCheckStrikes(hitsChecked.remainingGrandmas, delta, config)
     val newGrandmas = hitsChecked.resetGrandmas.map(_.reset) ++  grandmasMoved
     val newSplats = hitsChecked.resetGrandmas.map(_.location).map(Splatter.fromLocation)
-    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, strikes + newStrikes, (newSplats ++ splats).take(200))
+    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, strikes + newStrikes, (newSplats ++ splats).take(200).map(_.explode))
   }
 }
 object Model {
