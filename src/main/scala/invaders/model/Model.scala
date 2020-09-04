@@ -1,21 +1,22 @@
 package invaders.model
 
 import indigo._
+import invaders.Settings
 
 case class CheckHitsResult(shots: List[Shot], remainingGrandmas: List[Grandma], resetGrandmas: List[Grandma], points: Int)
 
 case class Model(
-  skrillex: Skrillex, 
-  shots: List[Shot], 
-  shotSpeed: Double, 
-  lights: List[LightWithLocation], 
-  grandmas: List[Grandma], 
-  grandmaSpeed: Double, 
-  points: Int, 
-  strikes: Int,
-  splats: List[Splatter]) {
+                  skrillex: Skrillex,
+                  shots: List[Shot],
+                  shotSpeed: Double,
+                  lights: List[LightWithLocation],
+                  grandmas: List[Grandma],
+                  grandmaSpeed: Double,
+                  points: Int,
+                  lives: Int,
+                  splats: List[Splatter]) {
 
-  private def boundedX(x: Double, minX: Double, maxX: Double): Double = 
+  private def boundedX(x: Double, minX: Double, maxX: Double): Double =
     if(x > maxX) maxX
     else if(x < minX) minX
     else x
@@ -56,7 +57,7 @@ case class Model(
     val (grandmasMoved, newStrikes) = moveAndCheckStrikes(hitsChecked.remainingGrandmas, delta, config)
     val newGrandmas = hitsChecked.resetGrandmas.map(_.reset) ++  grandmasMoved
     val newSplats = hitsChecked.resetGrandmas.map(_.location).map(Splatter.fromLocation)
-    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, strikes + newStrikes, (newSplats ++ splats).take(200).map(_.explode))
+    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, lives - newStrikes, (newSplats ++ splats).take(200).map(_.explode))
   }
 }
 object Model {
@@ -68,8 +69,8 @@ object Model {
       List(LightWithLocation(RGB.Magenta, Location(0, 0)), LightWithLocation(RGB.Cyan, Location(300, 700)), LightWithLocation(RGB.Yellow, Location(800, 100))),
       0.to(9).map(_ => Grandma.initial(config)).toList,
       grandmaSpeed,
-      0, 
       0,
+      Settings.lives,
       List.empty
     )
 }

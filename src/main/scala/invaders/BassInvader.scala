@@ -3,7 +3,7 @@ package invaders
 import indigo._
 import indigo.scenes._
 import invaders.model.Model
-import invaders.scenes.{RoomScene, StartScene}
+import invaders.scenes.{GameOverScene, RoomScene, StartScene}
 import scala.scalajs.js.annotation.JSExportTopLevel
 
 @JSExportTopLevel("IndigoGame")
@@ -21,13 +21,13 @@ object BassInvader extends IndigoGame[GameViewport, Unit, Model, Unit] {
     Option(StartScene.name)
 
   def scenes(bootData: GameViewport): NonEmptyList[Scene[Unit, Model, Unit]] =
-    NonEmptyList(StartScene, RoomScene)
+    NonEmptyList(StartScene, RoomScene, GameOverScene)
 
   def initialModel(startupData: Unit): Model =
     Model.initial(Settings.config, Settings.shotSpeed, Settings.grandmaSpeed)
 
   def initialViewModel(startupData: Unit, model: Model): Unit = ()
 
-  def setup(viewport: GameViewport, assetCollection: AssetCollection, dice: Dice): Startup[StartupErrors, Unit] = Startup.Success()
+  def setup(viewport: GameViewport, assetCollection: AssetCollection, dice: Dice): Startup[StartupErrors, Unit] = Startup.Success(())
 
 }

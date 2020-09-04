@@ -3,10 +3,9 @@ package invaders.scenes
 import indigo._
 import indigo.scenes._
 import invaders.model._
-import invaders.scenes.RoomScene.SceneViewModel
 import invaders.{GameAssets, Settings}
 
-object RoomScene extends Scene[Unit, Model, SceneViewModel] {
+object RoomScene extends Scene[Unit, Model, Unit] {
   type SceneModel     = Model
   type SceneViewModel = Unit
 
@@ -15,7 +14,7 @@ object RoomScene extends Scene[Unit, Model, SceneViewModel] {
   val modelLens: Lens[Model, Model] =
     Lens.keepLatest
 
-  val viewModelLens: Lens[SceneViewModel, SceneViewModel] = Lens.keepLatest
+  val viewModelLens: Lens[Unit, Unit] = Lens.keepLatest
 
   val eventFilters: EventFilters =
     EventFilters.Default
@@ -23,6 +22,13 @@ object RoomScene extends Scene[Unit, Model, SceneViewModel] {
 
   val subSystems: Set[SubSystem] =
     Set()
+
+  def updateViewModel(
+                       context: FrameContext[Unit],
+                       model: Model,
+                       viewModel: Unit
+                     ): GlobalEvent => Outcome[Unit] =
+    _ => Outcome(())
 
   def updateModel(context: FrameContext[Unit], model: Model): GlobalEvent => Outcome[Model] = {
 
@@ -32,6 +38,10 @@ object RoomScene extends Scene[Unit, Model, SceneViewModel] {
     case KeyboardEvent.KeyDown(Keys.SPACE) =>
       Outcome(model.updateShot()).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
 
+    case FrameTick if model.lives <= 0 =>
+      Outcome(model)
+        .addGlobalEvents(SceneEvent.JumpTo(GameOverScene.name))
+
     case FrameTick =>
       Outcome(model.updateTick(Settings.config, context.delta))
 
@@ -39,15 +49,15 @@ object RoomScene extends Scene[Unit, Model, SceneViewModel] {
       Outcome(model)
   }
 
-  def present(context: FrameContext[Unit], model: Model): SceneUpdateFragment =
+  def present(context: FrameContext[Unit], model: Model, viewModel: SceneViewModel): SceneUpdateFragment =
     SceneUpdateFragment.empty
     .addGameLayerNodes(
       drawScene(model.skrillex, model.shots, model.grandmas, model.splats)
     )
     .withLights(drawLights(model.lights))
-    .addGameLayerNodes(drawText(model.points, model.strikes))
+    .addGameLayerNodes(drawText(model.points, model.lives))
 
-  def drawText(score: Int, strikes: Int) = List(Text(s"Score $score", 10, 20, 1, GameAssets.fontKey).alignLeft) ++ List(Text(s"Strikes $strikes", Settings.config.viewport.width - 10, 20, 1, GameAssets.fontKey).alignRight)
+  def drawText(score: Int, lives: Int) = List(Text(s"Score $score", 10, 20, 1, GameAssets.fontKey).alignLeft) ++ List(Text(s"Lives $lives", Settings.config.viewport.width - 10, 20, 1, GameAssets.fontKey).alignRight)
 
   def drawLights(lights: List[LightWithLocation]): List[PointLight] =
    lights.map(l => PointLight.default

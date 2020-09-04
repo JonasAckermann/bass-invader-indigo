@@ -5,11 +5,11 @@ import indigo.scenes._
 import invaders.model._
 import invaders.{GameAssets, Settings}
 
-object StartScene extends Scene[Unit, Model, Unit] {
+object GameOverScene extends Scene[Unit, Model, Unit] {
   type SceneModel     = Model
   type SceneViewModel = Unit
 
-  val name: SceneName = SceneName("start")
+  val name: SceneName = SceneName("game over")
 
   val modelLens: Lens[Model, Model] =
     Lens.keepLatest
@@ -24,29 +24,29 @@ object StartScene extends Scene[Unit, Model, Unit] {
     Set()
 
   def updateModel(
-      context: FrameContext[Unit],
-      model: Model
-  ): GlobalEvent => Outcome[Model] = {
+                   context: FrameContext[Unit],
+                   model: Model
+                 ): GlobalEvent => Outcome[Model] = {
     case KeyboardEvent.KeyDown(Keys.SPACE) =>
-      Outcome(Model.initial(Settings.config, Settings.shotSpeed, Settings.grandmaSpeed))
-        .addGlobalEvents(SceneEvent.JumpTo(RoomScene.name))
+      Outcome(model)
+        .addGlobalEvents(SceneEvent.JumpTo(StartScene.name))
 
     case _ =>
       Outcome(model)
   }
 
   def updateViewModel(
-      context: FrameContext[Unit],
-      model: Model,
-      viewModel: Unit
-  ): GlobalEvent => Outcome[Unit] =
+                       context: FrameContext[Unit],
+                       model: Model,
+                       viewModel: Unit
+                     ): GlobalEvent => Outcome[Unit] =
     _ => Outcome(())
 
   def present(
-      context: FrameContext[Unit],
-      model: Model,
-      viewModel: Unit
-  ): SceneUpdateFragment = {
+               context: FrameContext[Unit],
+               model: Model,
+               viewModel: Unit
+             ): SceneUpdateFragment = {
     val horizontalCenter: Int = (Settings.config.viewport.width / Settings.config.magnification) / 2
     val verticalMiddle: Int   = (Settings.config.viewport.height / Settings.config.magnification) / 2
 
@@ -56,8 +56,7 @@ object StartScene extends Scene[Unit, Model, Unit] {
 
   def drawTitleText(center: Int, middle: Int): List[SceneGraphNode] =
     List(
-      Text("Bass Invaders", center, middle - 50, 1, GameAssets.fontKey).alignCenter,
-      Text("Press Space to Start.", center, middle - 5, 1, GameAssets.fontKey).alignCenter,
-      Text("Made by Jon using the lovely Indigo Engine.", center, middle + 30, 1, GameAssets.fontKey).alignCenter
+      Text("Game Over", center, middle - 50, 1, GameAssets.fontKey).alignCenter,
+      Text("Press Space to Restart.", center, middle, 1, GameAssets.fontKey).alignCenter
     )
 }
