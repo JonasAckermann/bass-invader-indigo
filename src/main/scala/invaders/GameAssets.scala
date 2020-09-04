@@ -1,6 +1,26 @@
+package invaders
+
 import indigo._
 
-object Font {
+object GameAssets {
+
+  val skrillexAsset = AssetName("skrillex")
+  val shotAsset = AssetName("shot")
+  val grandmaAsset = AssetName("grandma")
+  val splatAsset = AssetName("splat")
+  val bgAsset = AssetName("bg")
+  val shotSoundAsset = AssetName("shotSound")
+  val fontAssetName = AssetName("font")
+  val assets: Set[AssetType] =
+    Set(
+       AssetType.Image(skrillexAsset, AssetPath("assets/skrillex.png")),
+       AssetType.Image(shotAsset, AssetPath("assets/Wave2.png")),
+       AssetType.Image(grandmaAsset, AssetPath("assets/Granny.png")),
+       AssetType.Image(splatAsset, AssetPath("assets/splat.png")),
+       AssetType.Image(bgAsset, AssetPath("assets/bg.png")),
+       AssetType.Audio(shotSoundAsset, AssetPath("assets/drop.m4a")),
+       AssetType.Image(fontAssetName, AssetPath("assets/boxy_font.png"))
+    )
 
   val fontKey: FontKey = FontKey("font")
 

@@ -1,4 +1,4 @@
-package model
+package invaders.model
 
 case class Skrillex(location: Location)
 object Skrillex {

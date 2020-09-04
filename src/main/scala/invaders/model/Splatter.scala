@@ -1,4 +1,4 @@
-package model
+package invaders.model
 
 import indigo._
 import scala.util.Random
