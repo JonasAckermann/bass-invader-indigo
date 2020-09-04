@@ -8,6 +8,8 @@ object Settings {
   val shotSpeed = 3.0
   val grandmaSpeed = 3.0
   val lives = 10
+  val bloodFadeSpeed = 0.05
+  val grandmaFadeSpeed = 0.05
 
   val config =
     GameConfig(

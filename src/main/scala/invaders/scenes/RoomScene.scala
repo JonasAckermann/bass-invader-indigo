@@ -75,7 +75,7 @@ object RoomScene extends Scene[Unit, Model, Unit] {
       bgGraphic
     ) ++ splats.map(splat =>
       Graphic(Rectangle(0, 0, 40, 40), 1, Material.Textured(GameAssets.splatAsset).lit)
-        .withRef(20,0)
+        .withRef(20,20)
         .rotate(splat.rotation)
         .scaleBy(splat.scale, splat.scale)
         .moveTo(splat.location.toPoint)
@@ -86,6 +86,7 @@ object RoomScene extends Scene[Unit, Model, Unit] {
     )  ++ grandmas.map( grandma => 
       Graphic(Rectangle(0, 0, 40, 50), 1, Material.Textured(GameAssets.grandmaAsset).lit)
       .withRef(Point(20, 0))
+      .withAlpha(grandma.fade)
       .moveTo(grandma.location.toPoint)
     ) ++ List(
       Graphic(Rectangle(0, 0, 120, 50), 1, Material.Textured(GameAssets.skrillexAsset).lit)

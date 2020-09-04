@@ -23,15 +23,13 @@ case class Model(
 
   private def checkHits(shotsToCheck: List[Shot], grandmasToCheck: List[Grandma]): CheckHitsResult = {
     val filteredShots = shotsToCheck.filterNot(shot => grandmasToCheck.exists(grandma => shot.hitBox.overlaps(grandma.hitBox)))
-    val (resetGrandmas, remainingGrandmas) = grandmasToCheck.partition(grandma => shotsToCheck.exists(shot => grandma.hitBox.overlaps(shot.hitBox)))
+    val (resetGrandmas, remainingGrandmas) = grandmasToCheck.partition(grandma => shotsToCheck.exists(shot => (grandma.hitBox.overlaps(shot.hitBox) && !grandma.dead)))
     CheckHitsResult(filteredShots, remainingGrandmas, resetGrandmas, resetGrandmas.length)
   }
 
   private def moveAndCheckStrikes(grandmasToMove: List[Grandma], delta: Seconds, config: GameConfig): (List[Grandma], Int) = {
     val movedGrandmas: List[Grandma] = grandmasToMove.map(_.moveBy(distanceFromDelta(grandmaSpeed, delta), distanceFromDelta(grandmaSpeed, delta), config))
-    // Fragile: Count all grandmas that have been reset to the reset position by the moveBy method.
-    // All grandmas reset to that position by hits will have been moved out of the reset position by this point.
-    val strikes: Int = movedGrandmas.count(_.location.y == Grandma.aboveScreen )
+    val strikes: Int = movedGrandmas.count(_.didHitFloor )
     (movedGrandmas, strikes)
   }
 
@@ -55,7 +53,7 @@ case class Model(
     val hitsChecked = checkHits(shots, grandmas)
     val newShots = hitsChecked.shots.map(_.moveBy(distanceFromDelta(shotSpeed, delta)))
     val (grandmasMoved, newStrikes) = moveAndCheckStrikes(hitsChecked.remainingGrandmas, delta, config)
-    val newGrandmas = hitsChecked.resetGrandmas.map(_.reset) ++  grandmasMoved
+    val newGrandmas = hitsChecked.resetGrandmas.map(_.kill) ++  grandmasMoved
     val newSplats = hitsChecked.resetGrandmas.map(_.location).map(Splatter.fromLocation)
     this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, lives - newStrikes, (newSplats ++ splats).take(200).map(_.explode))
   }

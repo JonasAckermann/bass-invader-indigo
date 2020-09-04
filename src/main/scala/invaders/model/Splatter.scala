@@ -1,11 +1,12 @@
 package invaders.model
 
 import indigo._
+import invaders.Settings
 import scala.util.Random
 
 case class Splatter(location: Location, rotation: Radians, scale: Double, level: Double, initScale: Double) {
     def explode: Splatter = {
-        val newLevel = Math.min(level + 0.05, 1.0)
+        val newLevel = Math.min(level + Settings.bloodFadeSpeed, 1.0)
         val newScale = newLevel * initScale
         this.copy(level = newLevel, scale = newScale)
     }
