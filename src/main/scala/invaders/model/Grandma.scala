@@ -31,8 +31,9 @@ case class Grandma(
 object Grandma {
   val aboveScreen: Double = -50
   def initial(config: GameConfig): Grandma = {
-    val initX        = scala.util.Random.between(0, config.viewport.width).toDouble
-    val initLocation = Location(initX, Grandma.aboveScreen)
+    val initX        = scala.util.Random.between(0.0, config.viewport.width.toDouble)
+    val initY        = scala.util.Random.between(0.0, 200.0)
+    val initLocation = Location(initX, Grandma.aboveScreen - initY)
     val initDir      = if (scala.util.Random.nextBoolean()) Horizontal.Left else Horizontal.Right
     val initHitBox   = Rectangle(initLocation.toPoint, Point(40, 50))
     Grandma(initLocation, Direction(Vertical.Down, initDir), initHitBox, false, 1.0, false)

@@ -10,6 +10,7 @@ object Settings {
   val lives = 10
   val bloodFadeSpeed = 0.05
   val grandmaFadeSpeed = 0.05
+  val grandmaDirectionChangePer = 120 // at 60 fps statistically every 2s
 
   val config =
     GameConfig(
