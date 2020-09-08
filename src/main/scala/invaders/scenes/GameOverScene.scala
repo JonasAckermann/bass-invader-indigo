@@ -31,6 +31,10 @@ object GameOverScene extends Scene[Unit, Model, Unit] {
       Outcome(model)
         .addGlobalEvents(SceneEvent.JumpTo(StartScene.name))
 
+    case MouseEvent.Click(_, _) =>
+      Outcome(model)
+        .addGlobalEvents(SceneEvent.JumpTo(StartScene.name))
+
     case _ =>
       Outcome(model)
   }

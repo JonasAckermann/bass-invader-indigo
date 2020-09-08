@@ -31,6 +31,10 @@ object InterstitialScene extends Scene[Unit, Model, Unit] {
       Outcome(Model.initial(Settings.config, Settings.shotSpeed, Settings.grandmaSpeed))
         .addGlobalEvents(SceneEvent.JumpTo(RoomScene.name))
 
+    case MouseEvent.Click(_, _) =>
+      Outcome(Model.initial(Settings.config, Settings.shotSpeed, Settings.grandmaSpeed))
+        .addGlobalEvents(SceneEvent.JumpTo(RoomScene.name))
+
     case _ =>
       Outcome(model)
   }

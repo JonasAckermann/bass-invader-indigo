@@ -31,6 +31,10 @@ object StartScene extends Scene[Unit, Model, Unit] {
       Outcome(model)
         .addGlobalEvents(SceneEvent.JumpTo(InterstitialScene.name))
 
+    case MouseEvent.Click(_, _) =>
+      Outcome(model)
+        .addGlobalEvents(SceneEvent.JumpTo(InterstitialScene.name))
+
     case _ =>
       Outcome(model)
   }

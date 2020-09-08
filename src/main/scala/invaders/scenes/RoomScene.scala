@@ -35,6 +35,9 @@ object RoomScene extends Scene[Unit, Model, Unit] {
     case MouseEvent.Move(x, y) => 
       Outcome(model.updateSkrillex(Location(x.toDouble, y.toDouble), Settings.config))
 
+    case MouseEvent.Click(_, _) =>
+      Outcome(model.updateShot()).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
+
     case KeyboardEvent.KeyDown(Keys.SPACE) =>
       Outcome(model.updateShot()).addGlobalEvents(PlaySound(AssetName("shotSound"), Volume.Max))
 
