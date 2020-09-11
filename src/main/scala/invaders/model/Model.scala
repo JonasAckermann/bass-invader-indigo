@@ -14,7 +14,8 @@ case class Model(
                   grandmaSpeed: Double,
                   points: Int,
                   lives: Int,
-                  splats: List[Splatter]) {
+                  splats: List[Splatter],
+                  konamiCode: KonamiCode) {
 
   private def boundedX(x: Double, minX: Double, maxX: Double): Double =
     if(x > maxX) maxX
@@ -48,14 +49,16 @@ case class Model(
   }
 
   // Update everything else, in particular constant motion an locations
-  def updateTick(config: GameConfig, delta: Seconds): Model = {
+  def updateTick(config: GameConfig, delta: Seconds, inputState: InputState): Model = {
+    val newKonamiCode = konamiCode.next(KonamiCode.parseEvent(inputState.keyboard.lastKeyHeldDown))
     val newLights = lights.map(_.moveBy(distanceFromDelta(10, delta), distanceFromDelta(10, delta), config))
     val hitsChecked = checkHits(shots, grandmas)
     val newShots = hitsChecked.shots.map(_.moveBy(distanceFromDelta(shotSpeed, delta)))
     val (grandmasMoved, newStrikes) = moveAndCheckStrikes(hitsChecked.remainingGrandmas, delta, config)
     val newGrandmas = hitsChecked.resetGrandmas.map(_.kill) ++  grandmasMoved
     val newSplats = hitsChecked.resetGrandmas.map(_.location).map(Splatter.fromLocation)
-    this.copy(skrillex, newShots, shotSpeed, newLights, newGrandmas, grandmaSpeed, points + hitsChecked.points, lives - newStrikes, (newSplats ++ splats).take(200).map(_.explode))
+    val (resetGrandmas, bonusPoints) = if(newKonamiCode.successfulRun.length == KonamiCode.sequence.length) (newGrandmas.map(_.kill), 666) else (newGrandmas, 0)
+    this.copy(skrillex, newShots, shotSpeed, newLights, resetGrandmas, grandmaSpeed, points + hitsChecked.points + bonusPoints, lives - newStrikes, (newSplats ++ splats).take(200).map(_.explode), newKonamiCode)
   }
 }
 object Model {
@@ -69,6 +72,7 @@ object Model {
       grandmaSpeed,
       0,
       Settings.lives,
-      List.empty
+      List.empty,
+      KonamiCode()
     )
 }

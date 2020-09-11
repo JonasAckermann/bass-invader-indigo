@@ -46,7 +46,7 @@ object RoomScene extends Scene[Unit, Model, Unit] {
         .addGlobalEvents(SceneEvent.JumpTo(GameOverScene.name))
 
     case FrameTick =>
-      Outcome(model.updateTick(Settings.config, context.delta))
+      Outcome(model.updateTick(Settings.config, context.delta, context.inputState))
 
     case _ =>
       Outcome(model)
